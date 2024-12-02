@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DOM Manipulation</title>
+</head>
+<body>
+    <ul id="itemList">
+        <li>First item</li>
+        <li>Second item</li>
+        <li>Third item</li>
+    </ul>
+
+    <script>
+        function getRandomString(length) {
+            const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+            let result = '';
+            for (let i = 0; i < length; i++) {
+                result += characters.charAt(Math.floor(Math.random() * characters.length));
+            }
+            return result;
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const ul = document.getElementById('itemList');
+            const li = document.createElement('li');
+            li.textContent = 'Fourth item';
+            ul.appendChild(li);
+
+            const listItems = ul.getElementsByTagName('li');
+            for (let i = 0; i < listItems.length; i++) {
+                listItems[i].addEventListener('click', function() {
+                    this.textContent = getRandomString(10);
+                });
+            }
+        });
+    </script>
+</body>
+</html>

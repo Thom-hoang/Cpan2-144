@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Event Handling</title>
+    <style>
+        .random-color {
+            transition: background-color 0.3s ease;
+        }
+    </style>
+</head>
+<body>
+    <button id="clickMeBtn">Click Me!</button>
+
+    <script>
+        function getRandomColor() {
+            const letters = '0123456789ABCDEF';
+            let color = '#';
+            for (let i = 0; i < 6; i++) {
+                color += letters[Math.floor(Math.random() * 16)];
+            }
+            return color;
+        }
+
+        document.getElementById('clickMeBtn').addEventListener('click', function() {
+            alert('Button clicked!');
+            this.style.backgroundColor = getRandomColor();
+        });
+    </script>
+</body>
+</html>
