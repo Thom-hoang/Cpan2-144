@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recipe Recommender</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+        header {
+            background-color: #4CAF50;
+            color: white;
+            padding: 1em 0;
+            text-align: center;
+        }
+        main {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            margin: 2em;
+        }
+        #input-section, #recipe-results {
+            margin-bottom: 2em;
+            width: 100%;
+            max-width: 600px;
+            background-color: white;
+            padding: 1em;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        #ingredient-input {
+            padding: 0.5em;
+            width: 100%;
+            margin-bottom: 1em;
+        }
+        #search-button {
+            padding: 0.5em 1em;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Recipe Recommender</h1>
+    </header>
+    <main>
+        <section id="input-section">
+            <h2>Enter Your Ingredients</h2>
+            <input type="text" id="ingredient-input" placeholder="e.g., chicken, rice, spinach">
+            <button id="search-button">Search Recipes</button>
+        </section>
+        <section id="recipe-results"></section>
+    </main>
+    <script>
+        class User {
+            constructor(name, email) {
+                this.name = name;
+                this.email = email;
+                this.ingredients = [];
+            }
+            addIngredient(ingredient) {
+                this.ingredients.push(ingredient);
+            }
+        }
+
+        class Recipe {
+            constructor(title, ingredients, instructions) {
+                this.title = title;
+                this.ingredients = ingredients;
+                this.instructions = instructions;
+            }
+            display() {
+                const recipeSection = document.getElementById('recipe-results');
+                const recipeDiv = document.createElement('div');
+                recipeDiv.innerHTML = `
+                    <h3>${this.title}</h3>
+                    <p><strong>Ingredients:</strong> ${this.ingredients.join(', ')}</p>
+                    <p><strong>Instructions:</strong> ${this.instructions}</p>
+                `;
+                recipeSection.appendChild(recipeDiv);
+            }
+        }
+
+        document.getElementById('search-button').addEventListener('click', async () => {
+            const ingredientInput = document.getElementById('ingredient-input').value;
+            const apiURL = `https://api.spoonacular.com/recipes/findByIngredients?ingredients=${ingredientInput}&apiKey=6caad53866574f6684c20fbb9eaff8bc`;
+            
+            try {
+                const response = await fetch(apiURL);
+                if (!response.ok) throw new Error('Failed to fetch recipes');
+                
+                const recipes = await response.json();
+                console.log('API Response:', recipes); // Log the entire API response
+                document.getElementById('recipe-results').innerHTML = ''; // Clear previous results
+                
+                recipes.forEach(recipe => {
+                    console.log('Recipe Object:', recipe); // Log each recipe object to understand its structure
+                    const title = recipe.title || "No title available";
+                    const ingredients = recipe.usedIngredients?.map(ingredient => ingredient.name) || ["No ingredients available"];
+                    console.log('Ingredients:', recipe.usedIngredients); // Log usedIngredients to see its structure
+                    const instructions = "Instructions go here"; // Placeholder for instructions
+                    
+                    const newRecipe = new Recipe(title, ingredients, instructions);
+                    newRecipe.display();
+                });
+            } catch (error) {
+                console.error(error);
+                alert('An error occurred while fetching recipes');
+            }
+        });
+    </script>
+</body>
+</html>
